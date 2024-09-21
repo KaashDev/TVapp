@@ -60,7 +60,7 @@ Open the project in Tizen Studio.
  <img src="https://github.com/Kaash1802/TVapp/blob/main/guide%20pg%206.png" width=540>
 </p>
 
-## NOTE
+## Additional note
    - Don't forget to make a Samsung Certificate (Tools > Certficate Manager)
 In case you're having any issues, refer to [Connection Guide](https://developer.samsung.com/smarttv/develop/getting-started/using-sdk/tv-device.html)
 
