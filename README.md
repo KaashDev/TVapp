@@ -13,7 +13,7 @@ TVapp, built using Tizen Studio, enables seamless playback of HLS/m3u8 streams a
 
 ## Getting Started
 ```
-git clone https://github.com/Kaash1802/TVapp.git
+git clone https://github.com/KaashDev/TVapp.git
 ```
 Open the project in Tizen Studio.
 
