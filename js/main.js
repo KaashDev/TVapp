@@ -10,11 +10,22 @@ document.addEventListener('DOMContentLoaded', function() {
         
     ];
     var currentChannelIndex = 0;
+    var hls = null; // reuse one Hls instance so switching channels tears down the previous stream
 
     function loadChannel(index) {
+        // Tear down the previous stream first. Without this, a fresh Hls() attaches to the same
+        // <video> element while the old instance still owns it, so every channel keeps playing the
+        // first stream that was ever loaded.
+        if (hls) {
+            hls.destroy();
+            hls = null;
+        }
+        videoPlayer.removeAttribute('src');
+        videoPlayer.load();
+
         if (Hls.isSupported()) {
             console.log('HLS.js is supported');
-            var hls = new Hls();
+            hls = new Hls();
             hls.loadSource(channels[index].url);
             hls.attachMedia(videoPlayer);
             hls.on(Hls.Events.MANIFEST_PARSED, function() {
