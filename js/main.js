@@ -54,35 +54,73 @@ document.addEventListener('DOMContentLoaded', function() {
         showChannelBanner(channels[index].name);
     }
 
+    var bannerTimer = null;
     function showChannelBanner(channelName) {
         var banner = document.getElementById('channelBanner');
         if (!banner) {
             banner = document.createElement('div');
             banner.id = 'channelBanner';
+            // Sized to the title, not the full width of the screen, so it no longer covers subtitles or
+            // a channel's own on-screen overlays (e.g. news tickers).
             banner.style.position = 'absolute';
-            banner.style.bottom = '0';
-            banner.style.left = '0';
-            banner.style.width = '100%';
-            banner.style.height = '15%';
-            banner.style.backgroundColor = 'rgba(0, 0, 0, 1)';
+            banner.style.bottom = '8%';
+            banner.style.left = '40px';
+            banner.style.maxWidth = '80%';
+            banner.style.backgroundColor = 'rgba(0, 0, 0, 0.75)';
             banner.style.color = 'white';
-            banner.style.fontSize = '30px'; // Increase font size
-            banner.style.fontFamily = 'Helvetiva Neue, sans-serif';
-            banner.style.padding = '10px';
+            banner.style.fontSize = '30px';
+            banner.style.fontFamily = 'Helvetica Neue, sans-serif';
+            banner.style.padding = '8px 22px';
+            banner.style.borderRadius = '8px';
             banner.style.boxSizing = 'border-box';
             banner.style.zIndex = '1000';
-            banner.style.display = 'flex';
-            banner.style.alignItems = 'center';
-            banner.style.paddingBottom = '10px';
             document.body.appendChild(banner);
         }
-        banner.innerHTML = `<span style="margin-left: 50px;">${channelName}</span>`;
-        banner.style.display = 'block';
+        banner.textContent = channelName;
+        banner.style.display = 'inline-block';
 
-        
-        setTimeout(function() {
+        if (bannerTimer) clearTimeout(bannerTimer);
+        bannerTimer = setTimeout(function() {
             banner.style.display = 'none';
         }, 6000);
+    }
+
+    // High-contrast exit prompt. The native confirm() renders black-on-dark on some Samsung TVs
+    // (Tizen 5.5 on The Frame), leaving the text unreadable — so draw our own dialog instead.
+    function confirmExit() {
+        if (document.getElementById('exitDialog')) return;
+
+        var overlay = document.createElement('div');
+        overlay.id = 'exitDialog';
+        overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;z-index:2000;' +
+            'display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);';
+
+        var box = document.createElement('div');
+        box.style.cssText = 'background:#1f1f1f;color:#ffffff;padding:32px 44px;border-radius:14px;' +
+            'font-family:Helvetica Neue, sans-serif;font-size:30px;text-align:center;' +
+            'box-shadow:0 8px 28px rgba(0,0,0,0.55);max-width:70%;';
+        box.innerHTML = 'Are you sure you want to exit TVapp?' +
+            '<div style="margin-top:18px;font-size:20px;opacity:0.75;">OK / Enter to exit &nbsp;·&nbsp; Back to cancel</div>';
+
+        overlay.appendChild(box);
+        document.body.appendChild(overlay);
+
+        function cleanup() {
+            document.removeEventListener('keydown', onKey, true);
+            overlay.remove();
+        }
+        function onKey(e) {
+            e.stopPropagation(); // don't let channel navigation run behind the dialog
+            var k = e.keyCode;
+            if (e.key === 'Enter' || k === 13) {
+                cleanup();
+                tizen.application.getCurrentApplication().exit();
+            } else if (e.key === 'Back' || k === 10009 || k === 27) {
+                e.preventDefault();
+                cleanup();
+            }
+        }
+        document.addEventListener('keydown', onKey, true); // capture: run before the main handler
     }
 
     loadChannel(currentChannelIndex);
@@ -98,9 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 loadChannel(currentChannelIndex);
                 break;
             case 'Back': // Back button on Samsung TV remotes
-                if (confirm('Are you sure you want to exit TVapp?')) {
-                    tizen.application.getCurrentApplication().exit();
-                }
+                confirmExit();
                 break;
             default:
                 switch (event.keyCode) {
@@ -112,10 +148,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         currentChannelIndex = (currentChannelIndex - 1 + channels.length) % channels.length;
                         loadChannel(currentChannelIndex);
                         break;
-                    case 10009: // CH_DOWN button
-                    	if (confirm('Are you sure you want to exit the TVapp?')) {
-                            tizen.application.getCurrentApplication().exit();
-                        }
+                    case 10009: // RETURN button on Samsung TV remotes
+                        confirmExit();
                 }
         }
     });
