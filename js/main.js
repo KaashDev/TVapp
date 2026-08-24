@@ -11,6 +11,9 @@ document.addEventListener('DOMContentLoaded', function() {
     ];
     var currentChannelIndex = 0;
     var hls = null; // reuse one Hls instance so switching channels tears down the previous stream
+        
+    tizen.tvinputdevice.registerKey('ChannelUp');
+    tizen.tvinputdevice.registerKey('ChannelDown');
 
     function loadChannel(index) {
         // Tear down the previous stream first. Without this, a fresh Hls() attaches to the same
@@ -140,10 +143,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
             default:
                 switch (event.keyCode) {
+                    case 38: // Arrow Up
                     case 427: // CH_UP button
                         currentChannelIndex = (currentChannelIndex + 1) % channels.length;
                         loadChannel(currentChannelIndex);
                         break;
+                    case 40: // Arrow Down
                     case 428: // CH_DOWN button
                         currentChannelIndex = (currentChannelIndex - 1 + channels.length) % channels.length;
                         loadChannel(currentChannelIndex);
