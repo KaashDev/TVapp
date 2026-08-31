@@ -1,0 +1,861 @@
+/* ==========================================================================
+   Base — true black, fixed 1920x1080 TV canvas.
+   NOTE: this TV's WebKit does not support CSS Grid, aspect-ratio, gap, or
+   inset — every rule below intentionally avoids them in favor of flexbox +
+   fixed sizes, the padding-bottom aspect-ratio trick, margins, and explicit
+   top/right/bottom/left.
+   ========================================================================== */
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html, body {
+	width: 1920px;
+	height: 1080px;
+	background: #000000;
+	color: #ffffff;
+	font-family: 'Samsung One', 'Noto Sans', Arial, sans-serif;
+	overflow: hidden;
+}
+
+#app {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	display: flex;
+}
+
+button {
+	font-family: inherit;
+	border: none;
+	background: none;
+	color: inherit;
+	cursor: pointer;
+}
+
+/* ==========================================================================
+   Focus
+   ========================================================================== */
+.focused {
+	outline: 3px solid #ffffff;
+	box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+	transform: scale(1.06);
+	z-index: 2;
+}
+
+.rail-icon.focused {
+	transform: scale(1.15);
+	outline: none;
+	box-shadow: none;
+	background: #1a1a1a;
+}
+
+.favorite-btn.focused {
+	transform: scale(1.06);
+}
+
+/* ==========================================================================
+   Left icon rail
+   ========================================================================== */
+.icon-rail {
+	width: 110px;
+	height: 100%;
+	background: #000000;
+	border-right: 1px solid #161616;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 40px 0;
+	flex-shrink: 0;
+}
+
+.rail-icon {
+	width: 64px;
+	height: 64px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #6c6c6c;
+	margin-bottom: 8px;
+	transition: color 0.15s, background 0.15s;
+}
+
+.rail-icon.active {
+	color: #ffffff;
+	background: #1a1a1a;
+}
+
+.rail-spacer {
+	flex: 1;
+}
+
+/* ==========================================================================
+   Main content area
+   ========================================================================== */
+.main-area {
+	flex: 1;
+	height: 100%;
+	position: relative;
+}
+
+.screen {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	display: none;
+}
+
+.screen.active {
+	display: block;
+}
+
+#screen-grid {
+	overflow-y: auto;
+	padding-bottom: 48px;
+}
+
+#screen-categories, #screen-category-channels, #screen-settings {
+	overflow-y: auto;
+	padding: 56px 72px;
+}
+
+.page-title {
+	font-size: 40px;
+	font-weight: 600;
+	margin-bottom: 32px;
+}
+
+/* ==========================================================================
+   Hero banner
+   ========================================================================== */
+.hero {
+	position: relative;
+	width: 100%;
+	height: 420px;
+	background: #0a0a0a;
+	overflow: hidden;
+}
+
+.hero-bg {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+	opacity: 0.85;
+}
+
+.hero-gradient {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: linear-gradient(90deg, #000 15%, rgba(0, 0, 0, 0.65) 45%,
+		rgba(0, 0, 0, 0.15) 75%),
+		linear-gradient(0deg, #000 0%, rgba(0, 0, 0, 0) 40%);
+}
+
+.hero-content {
+	position: absolute;
+	left: 72px;
+	bottom: 56px;
+	max-width: 900px;
+}
+
+.hero-badge {
+	display: inline-block;
+	background: #e31c3d;
+	color: #fff;
+	font-size: 16px;
+	font-weight: 600;
+	letter-spacing: 1px;
+	padding: 5px 14px;
+	border-radius: 4px;
+	margin-bottom: 16px;
+}
+
+.hero-title {
+	font-size: 48px;
+	font-weight: 600;
+	margin-bottom: 10px;
+}
+
+.hero-subtitle {
+	font-size: 22px;
+	color: #c7c7c7;
+}
+
+/* ==========================================================================
+   Rows (Favorites, on Home)
+   ========================================================================== */
+.row {
+	padding: 0 72px;
+	margin-top: 36px;
+}
+
+.row-title {
+	font-size: 24px;
+	font-weight: 600;
+	color: #e6e6e6;
+	margin-bottom: 16px;
+}
+
+.tile-row {
+	display: flex;
+	overflow-x: auto;
+	padding-bottom: 8px;
+}
+
+.tile-row>* {
+	margin-right: 24px;
+	flex-shrink: 0;
+}
+
+.empty-hint {
+	font-size: 20px;
+	color: #5a5a5a;
+	padding: 20px 0;
+}
+
+/* ==========================================================================
+   Categories screen — two-column alphabetical list (no imagery). Using
+   nth-child(odd) for the inter-column gap rather than gap/grid, which this
+   WebKit doesn't support.
+   ========================================================================== */
+.category-row-item {
+	box-sizing: border-box;
+	flex: 0 0 calc(50% - 12px);
+	margin-bottom: 14px;
+	display: flex;
+	align-items: center;
+	background: #0d0d0d;
+	border: 1px solid #1c1c1c;
+	border-radius: 10px;
+	padding: 18px 24px;
+	text-align: left;
+	transition: background 0.15s, border-color 0.15s;
+}
+
+.category-row-item:nth-child(odd) {
+	margin-right: 24px;
+}
+
+.category-row-item:hover {
+	background: #131313;
+}
+
+.category-letter {
+	width: 42px;
+	height: 42px;
+	flex-shrink: 0;
+	border-radius: 50%;
+	background: #1a1a1a;
+	color: #6c9fff;
+	font-size: 18px;
+	font-weight: 700;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-right: 18px;
+}
+
+.category-label {
+	flex: 1;
+	font-size: 23px;
+	color: #e6e6e6;
+}
+
+.category-count {
+	flex-shrink: 0;
+	font-size: 16px;
+	color: #5a5a5a;
+	margin-left: 12px;
+}
+
+/* ==========================================================================
+   Channel tiles — fixed-width flex-wrap grid (no CSS Grid), used on both
+   the Category Channels screen and the Favorites row.
+   ========================================================================== */
+.channel-grid {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+/* Categories screen is a vertical stack of per-playlist sections (each its
+   own two-column flex-wrap grid) rather than one flat .channel-grid, so
+   categories from different active playlists don't run together. */
+#categoriesGrid {
+	display: block;
+}
+
+.category-section-header {
+	font-size: 20px;
+	font-weight: 600;
+	color: #8a8a8a;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	margin: 28px 0 14px;
+}
+
+.category-section-header:first-child {
+	margin-top: 0;
+}
+
+.category-section-grid {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.channel-tile {
+	width: 260px;
+	margin-right: 24px;
+	margin-bottom: 28px;
+	display: flex;
+	flex-direction: column;
+	background: transparent;
+}
+
+.tile-row .channel-tile {
+	width: 260px;
+	margin-bottom: 0;
+}
+
+/* 16:9 box using the padding-bottom trick since aspect-ratio isn't supported */
+.tile-thumb {
+	position: relative;
+	width: 100%;
+	height: 0;
+	padding-bottom: 56.25%;
+	background-color: #111111;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
+	border-radius: 8px;
+	overflow: hidden;
+}
+
+.tile-fallback {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 40px;
+	font-weight: 600;
+	color: #4d4d4d;
+}
+
+.live-badge {
+	position: absolute;
+	top: 8px;
+	left: 8px;
+	background: #e31c3d;
+	color: #fff;
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 0.5px;
+	padding: 3px 8px;
+	border-radius: 3px;
+}
+
+.fav-badge {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	color: #ffd23f;
+	font-size: 20px;
+	text-shadow: 0 0 6px rgba(0, 0, 0, 0.9);
+}
+
+.tile-name {
+	font-size: 18px;
+	padding-top: 10px;
+	color: #d8d8d8;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.loading-indicator {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	text-align: center;
+	font-size: 26px;
+	color: #a8a8a8;
+}
+
+.spinner {
+	width: 52px;
+	height: 52px;
+	margin: 0 auto 18px;
+	border: 5px solid #1a1a1a;
+	border-top-color: #ffffff;
+	border-radius: 50%;
+	animation: spin 0.9s linear infinite;
+}
+
+@
+keyframes spin {to { transform:rotate(360deg);
+	
+}
+
+}
+
+/* ==========================================================================
+   Settings screen — playlist management
+   ========================================================================== */
+.settings-hint {
+	font-size: 20px;
+	color: #6c6c6c;
+	margin-bottom: 32px;
+	margin-top: -20px;
+}
+
+.playlist-list {
+	max-width: 1300px;
+}
+
+.playlist-row-wrapper {
+	display: flex;
+	align-items: stretch;
+	margin-bottom: 16px;
+}
+
+.playlist-row {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	text-align: left;
+	background: #0d0d0d;
+	border: 1px solid #1e1e1e;
+	border-radius: 10px;
+	padding: 20px 24px;
+}
+
+.playlist-row.active {
+	border-color: #4d4d4d;
+}
+
+.playlist-checkbox {
+	flex-shrink: 0;
+	width: 28px;
+	height: 28px;
+	margin-right: 20px;
+	border: 2px solid #4d4d4d;
+	border-radius: 6px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 18px;
+	line-height: 1;
+	color: #ffffff;
+}
+
+.playlist-checkbox.checked {
+	background: #1c5ea8;
+	border-color: #1c5ea8;
+}
+
+.playlist-row-text {
+	flex: 1;
+	min-width: 0;
+}
+
+.playlist-name {
+	font-size: 22px;
+	font-weight: 600;
+	margin-bottom: 4px;
+}
+
+.playlist-url {
+	font-size: 16px;
+	color: #7a7a7a;
+	word-break: break-all;
+}
+
+.playlist-row.add-row {
+	color: #6c9fff;
+	font-size: 20px;
+	text-align: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.playlist-action-btn {
+	flex-shrink: 0;
+	width: 100px;
+	margin-left: 16px;
+	background: #0d0d0d;
+	border: 1px solid #1e1e1e;
+	border-radius: 10px;
+	font-size: 18px;
+	color: #d8d8d8;
+}
+
+.playlist-action-btn.delete {
+	color: #ff6b6b;
+}
+
+/* ==========================================================================
+   Screen: Add / Edit Playlist
+   ========================================================================== */
+#screen-add {
+	padding: 72px 72px;
+	display: none;
+}
+
+#screen-add.active {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.add-playlist-panel {
+	width: 1300px;
+	max-width: 100%;
+}
+
+.add-playlist-panel h2 {
+	font-size: 36px;
+	font-weight: 600;
+	margin-bottom: 10px;
+}
+
+.add-playlist-panel .hint {
+	font-size: 22px;
+	color: #8a8a8a;
+	margin-bottom: 28px;
+}
+
+.text-input-field {
+	font-size: 26px;
+	background: #0d0d0d;
+	border: 2px solid #262626;
+	border-radius: 10px;
+	padding: 18px 22px;
+	margin-bottom: 32px;
+	min-height: 72px;
+	word-break: break-all;
+	color: #6c9fff;
+}
+
+.text-input-field .cursor {
+	animation: blink 1s step-end infinite;
+	color: #ffffff;
+}
+
+@
+keyframes blink { 50% {
+	opacity: 0;
+}
+
+}
+.onscreen-keyboard {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 32px;
+}
+
+.keyboard-row {
+	display: flex;
+	margin-bottom: 12px;
+}
+
+.key {
+	margin-right: 12px;
+}
+
+.key {
+	min-width: 68px;
+	height: 68px;
+	background: #0d0d0d;
+	border: 1px solid #1e1e1e;
+	border-radius: 8px;
+	font-size: 24px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: uppercase;
+}
+
+.key.wide {
+	min-width: 140px;
+	font-size: 18px;
+	padding: 0 16px;
+}
+
+.key.extra-wide {
+	min-width: 230px;
+	font-size: 18px;
+	padding: 0 16px;
+}
+
+.add-actions {
+	display: flex;
+}
+
+.add-actions>* {
+	margin-right: 20px;
+}
+
+.btn {
+	font-size: 24px;
+	padding: 16px 42px;
+	border-radius: 10px;
+	background: #0d0d0d;
+	border: 1px solid #1e1e1e;
+	color: #d8d8d8;
+}
+
+.btn.primary {
+	background: #1c5ea8;
+	border-color: #1c5ea8;
+	color: #ffffff;
+}
+
+/* ==========================================================================
+   Confirm dialog — remote-navigable replacement for window.confirm(), which
+   Tizen's WebKit does not render as an interactive dialog the D-pad can reach.
+   ========================================================================== */
+.modal-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.7);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+}
+
+.modal-overlay[hidden] {
+	display: none;
+}
+
+.modal-box {
+	background: #141414;
+	border: 1px solid #262626;
+	border-radius: 10px;
+	padding: 36px 42px;
+	max-width: 700px;
+	text-align: center;
+}
+
+.modal-box p {
+	font-size: 26px;
+	margin: 0 0 28px;
+	color: #d8d8d8;
+}
+
+.modal-actions {
+	display: flex;
+	justify-content: center;
+}
+
+.modal-actions>* {
+	margin: 0 10px;
+}
+
+/* ==========================================================================
+   Screen: Donate — voluntary support page reached from the icon rail.
+   ========================================================================== */
+#screen-donate {
+	display: none;
+	align-items: center;
+	justify-content: center;
+}
+
+#screen-donate.active {
+	display: flex;
+}
+
+.donate-panel {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	gap: 72px;
+	padding: 40px;
+}
+
+.donate-image {
+	max-width: 460px;
+	max-height: 860px;
+	width: auto;
+	height: auto;
+	border-radius: 16px;
+	flex-shrink: 0;
+}
+
+.donate-support-card {
+	width: 420px;
+	max-width: 100%;
+	text-align: center;
+}
+
+.donate-support-title {
+	font-size: 34px;
+	font-weight: 600;
+	margin-bottom: 28px;
+}
+
+.donate-qr {
+	width: 260px;
+	height: 260px;
+	margin: 0 auto 24px;
+	background: #ffffff;
+	border-radius: 12px;
+	padding: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.donate-qr img {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.donate-url {
+	font-size: 17px;
+	color: #7a7a7a;
+	word-break: break-all;
+	margin-bottom: 20px;
+}
+
+.donate-hint {
+	font-size: 18px;
+	color: #a8a8a8;
+	line-height: 1.5;
+}
+
+/* ==========================================================================
+   Screen: Player — fullscreen, covers the icon rail too, and now has a
+   real focusable Favorite button instead of relying on long-press.
+   ========================================================================== */
+#screen-player {
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 30;
+	background: #000000;
+}
+
+#videoPlayer {
+	width: 100%;
+	height: 100%;
+	background: #000;
+}
+
+.player-overlay {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 56px 72px;
+	background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%,
+		rgba(0, 0, 0, 0) 30%);
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.25s ease;
+}
+
+.player-overlay.visible {
+	opacity: 1;
+}
+
+.now-playing {
+	display: flex;
+	align-items: center;
+}
+
+.channel-logo {
+	width: 68px;
+	height: 68px;
+	margin-right: 22px;
+	background-color: #0d0d0d;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
+	border-radius: 8px;
+}
+
+.now-playing-name {
+	font-size: 32px;
+	font-weight: 600;
+}
+
+.now-playing-group {
+	font-size: 20px;
+	color: #8a8a8a;
+}
+
+.favorite-btn {
+	display: flex;
+	align-items: center;
+	font-size: 22px;
+	padding: 16px 28px;
+	border-radius: 999px;
+	background: #141414;
+	border: 2px solid #262626;
+	color: #d8d8d8;
+	flex-shrink: 0;
+}
+
+.favorite-btn #favoriteIcon {
+	font-size: 26px;
+	margin-right: 10px;
+	color: #5a5a5a;
+}
+
+.favorite-btn.active {
+	border-color: #ffd23f;
+}
+
+.favorite-btn.active #favoriteIcon {
+	color: #ffd23f;
+}
+
+.toast {
+	position: absolute;
+	bottom: 60px;
+	left: 50%;
+	transform: translateX(-50%) translateY(20px);
+	background: #141414;
+	border: 1px solid #262626;
+	padding: 16px 30px;
+	border-radius: 10px;
+	font-size: 22px;
+	opacity: 0;
+	transition: opacity 0.2s, transform 0.2s;
+	pointer-events: none;
+}
+
+.toast.visible {
+	opacity: 1;
+	transform: translateX(-50%) translateY(0);
+}

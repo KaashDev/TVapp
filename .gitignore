@@ -1,0 +1,12 @@
+# Tizen Studio build output (regenerate with `tizen build-web`)
+.buildResult/
+
+# Tizen/Eclipse project metadata (workspace-local, not portable)
+.project
+.tproject
+.settings/
+.sign/
+
+# Ad-hoc/local build artifacts
+*.wgt
+!/TVapp.wgt

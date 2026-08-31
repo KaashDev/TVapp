@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TVapp</title>
+<link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+	<div id="app">
+
+		<!-- ===================== Left icon rail ===================== -->
+		<nav class="icon-rail">
+			<button class="rail-icon active" id="navHome" tabindex="-1"
+				title="Home">
+				<svg viewBox="0 0 24 24" width="30" height="30">
+					<path fill="currentColor" d="M12 3 2 12h3v8h6v-6h2v6h6v-8h3z" /></svg>
+			</button>
+			<button class="rail-icon" id="navCategories" tabindex="-1"
+				title="Categories">
+				<svg viewBox="0 0 24 24" width="28" height="28">
+					<path fill="currentColor"
+						d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z" /></svg>
+			</button>
+			<button class="rail-icon" id="navDonate" tabindex="-1"
+				title="Support">
+				<svg viewBox="0 0 24 24" width="28" height="28">
+					<path fill="currentColor"
+						d="M12 21s-7.5-4.6-10.2-9.1C.2 9 1 5.6 4 4.1 6.3 3 8.9 3.7 12 6.5 15.1 3.7 17.7 3 20 4.1c3 1.5 3.8 4.9 2.2 7.4C19.5 16.4 12 21 12 21z" /></svg>
+			</button>
+			<div class="rail-spacer"></div>
+			<button class="rail-icon" id="navSettings" tabindex="-1"
+				title="Settings">
+				<svg viewBox="0 0 24 24" width="28" height="28">
+					<path fill="currentColor"
+						d="M19.4 13a7.6 7.6 0 0 0 0-2l2-1.6-2-3.4-2.4 1a7.6 7.6 0 0 0-1.7-1L15 3h-4l-.3 2.9a7.6 7.6 0 0 0-1.7 1l-2.4-1-2 3.4L6.6 11a7.6 7.6 0 0 0 0 2l-2 1.6 2 3.4 2.4-1a7.6 7.6 0 0 0 1.7 1L11 21h4l.3-2.9a7.6 7.6 0 0 0 1.7-1l2.4 1 2-3.4z M12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z" /></svg>
+			</button>
+		</nav>
+
+		<div class="main-area">
+
+			<!-- ===================== Home Screen ===================== -->
+			<section id="screen-grid" class="screen">
+				<div class="hero" id="hero">
+					<div class="hero-bg" id="heroBg"></div>
+					<div class="hero-gradient"></div>
+					<div class="hero-content">
+						<div class="hero-badge">LIVE</div>
+						<h1 class="hero-title" id="heroTitle">&nbsp;</h1>
+						<p class="hero-subtitle" id="heroSubtitle">&nbsp;</p>
+					</div>
+				</div>
+
+				<section class="row">
+					<h2 class="row-title">Favorites</h2>
+					<div class="tile-row" id="favoritesRow"></div>
+				</section>
+
+				<div class="loading-indicator" id="loadingIndicator" hidden>
+					<div class="spinner"></div>
+					<p>Loading playlist&hellip;</p>
+				</div>
+			</section>
+
+			<!-- ===================== Categories browse screen ===================== -->
+			<section id="screen-categories" class="screen">
+				<h1 class="page-title">Categories</h1>
+				<div class="channel-grid" id="categoriesGrid"></div>
+			</section>
+
+			<!-- ===================== Channels within a category ===================== -->
+			<section id="screen-category-channels" class="screen">
+				<h1 class="page-title" id="categoryChannelsTitle">Channels</h1>
+				<div class="channel-grid" id="categoryChannelsGrid"></div>
+			</section>
+
+			<!-- ===================== Settings Screen ===================== -->
+			<section id="screen-settings" class="screen">
+				<h1 class="page-title">Playlists</h1>
+				<p class="settings-hint">Select a playlist to activate or
+					deactivate it &mdash; multiple can be active at once. Use the
+					buttons next to it to edit or delete.</p>
+				<div class="playlist-list" id="playlistList"></div>
+			</section>
+
+			<!-- ===================== Support / Donate Screen ===================== -->
+			<section id="screen-donate" class="screen">
+				<div class="donate-panel">
+					<img class="donate-image" id="donateImage" src="images/donate.png" alt="Support this app">
+					<div class="donate-support-card">
+						<h2 class="donate-support-title">Support the developer</h2>
+						<div class="donate-qr">
+							<img src="images/donate_qr.png" alt="QR code to donate via Stripe">
+						</div>
+						<p class="donate-url">donate.stripe.com/8x2eVef1M8vR58513Ebwk01</p>
+						<p class="donate-hint">Scan with your phone, or visit the link, to
+							leave a tip via Stripe &mdash; starts at $1, but you can change
+							it to whatever amount you'd like. Totally optional &mdash;
+							thank you for using the app either way!</p>
+					</div>
+				</div>
+			</section>
+
+			<!-- ===================== Add / Edit Playlist Screen ===================== -->
+			<section id="screen-add" class="screen">
+				<div class="add-playlist-panel">
+					<h2 id="addPlaylistTitle">Add M3U Playlist</h2>
+					<p class="hint">Enter the URL of your M3U / M3U8 playlist</p>
+					<div class="text-input-field">
+						<span id="urlText">http://</span><span class="cursor">|</span>
+					</div>
+					<div class="onscreen-keyboard" id="keyboard"></div>
+					<div class="add-actions">
+						<button class="btn primary" id="loadPlaylistBtn" tabindex="-1">Save</button>
+						<button class="btn" id="cancelAddBtn" tabindex="-1">Cancel</button>
+					</div>
+				</div>
+			</section>
+
+			<!-- ===================== Player Screen ===================== -->
+			<section id="screen-player" class="screen">
+				<video id="videoPlayer" autoplay></video>
+				<div class="player-overlay" id="playerOverlay">
+					<div class="now-playing">
+						<div id="nowPlayingLogo" class="channel-logo"></div>
+						<div>
+							<div class="now-playing-name" id="nowPlayingName"></div>
+							<div class="now-playing-group" id="nowPlayingGroup"></div>
+						</div>
+					</div>
+					<button class="favorite-btn" id="favoriteBtn" tabindex="-1">
+						<span id="favoriteIcon">&#9734;</span><span>Favorite</span>
+					</button>
+				</div>
+				<div class="toast" id="toast"></div>
+			</section>
+
+		</div>
+
+		<!-- ===================== Confirm Dialog ===================== -->
+		<div class="modal-overlay" id="confirmModal" hidden>
+			<div class="modal-box">
+				<p id="confirmMessage"></p>
+				<div class="modal-actions">
+					<button class="btn" id="confirmCancelBtn" tabindex="-1">Cancel</button>
+					<button class="btn primary" id="confirmYesBtn" tabindex="-1">Delete</button>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<!-- If your project already bundles hls.js locally (lib/hls.min.js), point this at that
+     instead — Tizen Studio projects usually vendor their JS libs rather than pulling from
+     a CDN at runtime. -->
+	<script src="https://cdn.jsdelivr.net/npm/hls.js@1/dist/hls.min.js"></script>
+	<script src="js/main.js"></script>
+</body>
+</html>
