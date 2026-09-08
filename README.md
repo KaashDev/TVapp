@@ -13,7 +13,7 @@ A Samsung Smart TV app built with Tizen Studio that streams live IPTV channels f
 - **Categories & channel browsing** — channels are grouped by `group-title` into an alphabetical, two-column category list, then into a channel grid per category.
 - **Favorites** — star any channel while watching it. Favorites persist independently of which playlists are active, but are only *shown* while their source playlist is active (deactivating a playlist hides its favorites without deleting them; deleting the playlist removes them for good).
 - **Remote-control navigation** — a custom focus-zone system drives all navigation via D-pad (arrow keys + Enter/OK) and the remote's Back key; no mouse/pointer required. Includes Channel Up/Down zapping and Play/Pause from the remote.
-- **HLS playback** via [hls.js](https://github.com/video-dev/hls.js/), with automatic recovery from non-fatal network/media errors.
+- **HLS playback** via a vendored copy of [hls.js](https://github.com/video-dev/hls.js/) 1.7.2, with automatic recovery from non-fatal network/media errors.
 - **Support / Donate screen** — a QR code and link to a Stripe payment link for optional tips. The amount is donor-adjustable (starts at $1, no maximum).
 
 ## Requirements
@@ -29,6 +29,7 @@ config.xml           Tizen widget manifest (app id, privileges, profile)
 index.html            App shell — all screens as <section> elements
 css/style.css         All styling (focus states, layout, screens)
 js/main.js            App logic: Focus/navigation, playlists, playback, favorites
+lib/hls.min.js        Vendored hls.js 1.7.2 (playback; Apache-2.0)
 playlists/            Bundled default M3U playlist (offline fallback)
 images/               App art: donate banner, donate QR code, icons
 icon.png              App icon
@@ -64,7 +65,7 @@ Alternatively, sideload the pre-built `TVapp.wgt` in this repo directly without 
 
 ## Notes on network dependence
 
-Only the app shell and the bundled default playlist are guaranteed to work fully offline. Any playlist fetched from an external URL (including the IPTV-ORG "open channels" quick-add) requires network access from the TV/emulator; loads that hang are aborted after 15 seconds with an error toast rather than blocking the UI indefinitely.
+Only the app shell, the vendored playback library (`lib/hls.min.js`), and the bundled default playlist are guaranteed to work fully offline. Any playlist fetched from an external URL (including the IPTV-ORG "open channels" quick-add) requires network access from the TV/emulator; loads that hang are aborted after 15 seconds with an error toast rather than blocking the UI indefinitely. Individual channel streams still play from their own servers.
 
 ## Support
 

@@ -149,10 +149,8 @@
 
 	</div>
 
-	<!-- If your project already bundles hls.js locally (lib/hls.min.js), point this at that
-     instead — Tizen Studio projects usually vendor their JS libs rather than pulling from
-     a CDN at runtime. -->
-	<script src="https://cdn.jsdelivr.net/npm/hls.js@1/dist/hls.min.js"></script>
+	<!-- hls.js 1.7.2, vendored. Playback must not depend on jsDelivr at runtime. -->
+	<script src="lib/hls.min.js"></script>
 	<script src="js/main.js"></script>
 </body>
 </html>
