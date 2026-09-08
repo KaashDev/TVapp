@@ -1002,7 +1002,7 @@ document.addEventListener('DOMContentLoaded', function () {
         logoEl.style.backgroundImage = ch.logo ? ('url(' + JSON.stringify(ch.logo) + ')') : '';
         updateFavoriteButton();
 
-        if (Hls.isSupported()) {
+        if (typeof Hls !== 'undefined' && Hls.isSupported()) {
             state.hls = new Hls();
             state.hls.loadSource(ch.url);
             state.hls.attachMedia(videoPlayer);
@@ -1018,7 +1018,9 @@ document.addEventListener('DOMContentLoaded', function () {
             videoPlayer.src = ch.url;
             videoPlayer.addEventListener('loadedmetadata', function () { videoPlayer.play(); }, { once: true });
         } else {
-            showToast('HLS is not supported on this device');
+            showToast(typeof Hls === 'undefined'
+                ? 'Playback library failed to load'
+                : 'HLS is not supported on this device');
         }
 
         showOverlay();
