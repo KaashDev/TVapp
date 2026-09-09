@@ -20,12 +20,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var IPTV_ORG_URL = 'https://iptv-org.github.io/iptv/index.country.m3u';
 
+    // Custom D-pad keyboard (not the Tizen IME). Query-string characters
+    // (?&=%) must sit on this always-visible punctuation row — IPTV playlist
+    // URLs almost always look like .../get.php?username=...&password=...
     var KEYBOARD_ROWS = [
         ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
         ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
         ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
         ['z', 'x', 'c', 'v', 'b', 'n', 'm'],
-        [':', '/', '.', '-', '_'],
+        [':', '/', '.', '-', '_', '?', '&', '=', '%', '@', '#', '+'],
         [{ label: 'SPACE', action: 'space', wide: 'extra-wide' },
          { label: 'DEL', action: 'backspace', wide: 'wide' },
          { label: 'CLEAR', action: 'clear', wide: 'wide' },

@@ -573,6 +573,7 @@ keyframes blink { 50% {
 
 .keyboard-row {
 	display: flex;
+	flex-wrap: nowrap;
 	margin-bottom: 12px;
 }
 
