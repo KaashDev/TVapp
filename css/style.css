@@ -9,9 +9,17 @@
 	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
+	cursor: none !important;
+	-webkit-tap-highlight-color: transparent !important;
 }
 
-html, body {
+*:focus,
+*:active {
+	outline: none !important;
+}
+
+html,
+body {
 	width: 1920px;
 	height: 1080px;
 	background: #000000;
@@ -119,7 +127,9 @@ button {
 	padding-bottom: 48px;
 }
 
-#screen-categories, #screen-category-channels, #screen-settings {
+#screen-categories,
+#screen-category-channels,
+#screen-settings {
 	overflow-y: auto;
 	padding: 56px 72px;
 }
@@ -160,7 +170,7 @@ button {
 	bottom: 0;
 	left: 0;
 	background: linear-gradient(90deg, #000 15%, rgba(0, 0, 0, 0.65) 45%,
-		rgba(0, 0, 0, 0.15) 75%),
+			rgba(0, 0, 0, 0.15) 75%),
 		linear-gradient(0deg, #000 0%, rgba(0, 0, 0, 0) 40%);
 }
 
@@ -408,10 +418,11 @@ button {
 	animation: spin 0.9s linear infinite;
 }
 
-@
-keyframes spin {to { transform:rotate(360deg);
-	
-}
+@keyframes spin {
+	to {
+		transform: rotate(360deg);
+
+	}
 
 }
 
@@ -559,12 +570,13 @@ keyframes spin {to { transform:rotate(360deg);
 	color: #ffffff;
 }
 
-@
-keyframes blink { 50% {
-	opacity: 0;
-}
+@keyframes blink {
+	50% {
+		opacity: 0;
+	}
 
 }
+
 .onscreen-keyboard {
 	display: flex;
 	flex-direction: column;
@@ -573,7 +585,6 @@ keyframes blink { 50% {
 
 .keyboard-row {
 	display: flex;
-	flex-wrap: nowrap;
 	margin-bottom: 12px;
 }
 
@@ -760,12 +771,90 @@ keyframes blink { 50% {
 	left: 0;
 	z-index: 30;
 	background: #000000;
+	cursor: none !important;
+}
+
+#screen-player,
+#screen-player * {
+	cursor: none !important;
+}
+
+#avPlayer {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 1920px;
+	height: 1080px;
+	background: transparent;
+	outline: none;
+	border: none;
+	pointer-events: none;
 }
 
 #videoPlayer {
 	width: 100%;
 	height: 100%;
-	background: #000;
+	background: #000000;
+	outline: none;
+	border: none;
+	display: none;
+	transition: opacity 0.2s ease;
+}
+
+/* Ocultar de forma exhaustiva todos los controles nativos, overlays, paneles y botones de WebKit/Chromium */
+video::-webkit-media-controls,
+video::-webkit-media-controls-enclosure,
+video::-webkit-media-controls-panel,
+video::-webkit-media-controls-overlay-enclosure,
+video::-webkit-media-controls-overlay-play-button,
+video::-webkit-media-controls-play-button,
+video::-webkit-media-controls-start-playback-button,
+video::-webkit-media-controls-current-time-display,
+video::-webkit-media-controls-time-remaining-display,
+video::-webkit-media-controls-timeline,
+video::-webkit-media-controls-volume-slider,
+video::-webkit-media-controls-mute-button,
+video::-webkit-media-controls-toggle-closed-captions-button,
+video::-webkit-media-text-track-container,
+video::-webkit-media-text-track-display,
+video::-webkit-media-text-track-region,
+video::cue,
+#videoPlayer::-webkit-media-controls,
+#videoPlayer::-webkit-media-controls-enclosure,
+#videoPlayer::-webkit-media-controls-panel,
+#videoPlayer::-webkit-media-controls-overlay-enclosure,
+#videoPlayer::-webkit-media-controls-overlay-play-button,
+#videoPlayer::-webkit-media-controls-play-button,
+#videoPlayer::-webkit-media-controls-start-playback-button,
+#videoPlayer::cue,
+*::-webkit-media-controls-overlay-play-button,
+*::-webkit-media-controls {
+	display: none !important;
+	-webkit-appearance: none !important;
+	appearance: none !important;
+	opacity: 0 !important;
+	visibility: hidden !important;
+	pointer-events: none !important;
+	width: 0 !important;
+	height: 0 !important;
+}
+
+
+html.avplay-active,
+html.avplay-active body,
+html.avplay-active #app,
+html.avplay-active #screen-player {
+	background: transparent;
+}
+
+html.avplay-active .icon-rail,
+html.avplay-active .main-area>.screen:not(#screen-player) {
+	visibility: hidden;
+}
+
+html.avplay-active #loadingIndicator,
+html.avplay-active .spinner {
+	display: none !important;
 }
 
 .player-overlay {
@@ -779,7 +868,7 @@ keyframes blink { 50% {
 	justify-content: space-between;
 	padding: 56px 72px;
 	background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%,
-		rgba(0, 0, 0, 0) 30%);
+			rgba(0, 0, 0, 0) 30%);
 	opacity: 0;
 	pointer-events: none;
 	transition: opacity 0.25s ease;

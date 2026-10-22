@@ -10,3 +10,10 @@
 # Ad-hoc/local build artifacts
 *.wgt
 !/TVapp.wgt
+
+# Tizen developer signatures and packaging temporaries
+author-signature.xml
+signature1.xml
+.manifest.tmp
+tizen_web_project.yaml
+Debug/

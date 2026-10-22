@@ -1,38 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<title>TVapp</title>
-<link rel="stylesheet" type="text/css" href="css/style.css">
+	<meta charset="UTF-8">
+	<title>TVapp</title>
+	<link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
+
 <body>
 	<div id="app">
 
 		<!-- ===================== Left icon rail ===================== -->
 		<nav class="icon-rail">
-			<button class="rail-icon active" id="navHome" tabindex="-1"
-				title="Home">
+			<button class="rail-icon active" id="navHome" tabindex="-1" title="Home">
 				<svg viewBox="0 0 24 24" width="30" height="30">
-					<path fill="currentColor" d="M12 3 2 12h3v8h6v-6h2v6h6v-8h3z" /></svg>
+					<path fill="currentColor" d="M12 3 2 12h3v8h6v-6h2v6h6v-8h3z" />
+				</svg>
 			</button>
-			<button class="rail-icon" id="navCategories" tabindex="-1"
-				title="Categories">
+			<button class="rail-icon" id="navCategories" tabindex="-1" title="Categories">
+				<svg viewBox="0 0 24 24" width="28" height="28">
+					<path fill="currentColor" d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z" />
+				</svg>
+			</button>
+			<button class="rail-icon" id="navDonate" tabindex="-1" title="Support">
 				<svg viewBox="0 0 24 24" width="28" height="28">
 					<path fill="currentColor"
-						d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z" /></svg>
-			</button>
-			<button class="rail-icon" id="navDonate" tabindex="-1"
-				title="Support">
-				<svg viewBox="0 0 24 24" width="28" height="28">
-					<path fill="currentColor"
-						d="M12 21s-7.5-4.6-10.2-9.1C.2 9 1 5.6 4 4.1 6.3 3 8.9 3.7 12 6.5 15.1 3.7 17.7 3 20 4.1c3 1.5 3.8 4.9 2.2 7.4C19.5 16.4 12 21 12 21z" /></svg>
+						d="M12 21s-7.5-4.6-10.2-9.1C.2 9 1 5.6 4 4.1 6.3 3 8.9 3.7 12 6.5 15.1 3.7 17.7 3 20 4.1c3 1.5 3.8 4.9 2.2 7.4C19.5 16.4 12 21 12 21z" />
+				</svg>
 			</button>
 			<div class="rail-spacer"></div>
-			<button class="rail-icon" id="navSettings" tabindex="-1"
-				title="Settings">
+			<button class="rail-icon" id="navSettings" tabindex="-1" title="Settings">
 				<svg viewBox="0 0 24 24" width="28" height="28">
 					<path fill="currentColor"
-						d="M19.4 13a7.6 7.6 0 0 0 0-2l2-1.6-2-3.4-2.4 1a7.6 7.6 0 0 0-1.7-1L15 3h-4l-.3 2.9a7.6 7.6 0 0 0-1.7 1l-2.4-1-2 3.4L6.6 11a7.6 7.6 0 0 0 0 2l-2 1.6 2 3.4 2.4-1a7.6 7.6 0 0 0 1.7 1L11 21h4l.3-2.9a7.6 7.6 0 0 0 1.7-1l2.4 1 2-3.4z M12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z" /></svg>
+						d="M19.4 13a7.6 7.6 0 0 0 0-2l2-1.6-2-3.4-2.4 1a7.6 7.6 0 0 0-1.7-1L15 3h-4l-.3 2.9a7.6 7.6 0 0 0-1.7 1l-2.4-1-2 3.4L6.6 11a7.6 7.6 0 0 0 0 2l-2 1.6 2 3.4 2.4-1a7.6 7.6 0 0 0 1.7 1L11 21h4l.3-2.9a7.6 7.6 0 0 0 1.7-1l2.4 1 2-3.4z M12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z" />
+				</svg>
 			</button>
 		</nav>
 
@@ -118,7 +119,8 @@
 
 			<!-- ===================== Player Screen ===================== -->
 			<section id="screen-player" class="screen">
-				<video id="videoPlayer" autoplay></video>
+				<object id="avPlayer" type="application/avplayer" tabindex="-1"></object>
+				<video id="videoPlayer" playsinline></video>
 				<div class="player-overlay" id="playerOverlay">
 					<div class="now-playing">
 						<div id="nowPlayingLogo" class="channel-logo"></div>
@@ -149,10 +151,9 @@
 
 	</div>
 
-	<!-- If your project already bundles hls.js locally (lib/hls.min.js), point this at that
-     instead — Tizen Studio projects usually vendor their JS libs rather than pulling from
-     a CDN at runtime. -->
-	<script src="https://cdn.jsdelivr.net/npm/hls.js@1/dist/hls.min.js"></script>
+	<script src="$WEBAPIS/webapis/webapis.js"></script>
+	<script src="lib/hls.min.js"></script>
 	<script src="js/main.js"></script>
 </body>
+
 </html>
